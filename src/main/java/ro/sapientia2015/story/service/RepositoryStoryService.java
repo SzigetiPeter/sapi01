@@ -18,51 +18,54 @@ import java.util.List;
 @Service
 public class RepositoryStoryService implements StoryService {
 
-    @Resource
-    private StoryRepository repository;
+	@Resource
+	private StoryRepository repository;
 
-    @Transactional
-    @Override
-    public Story add(StoryDTO added) {
+	@Transactional
+	@Override
+	public Story add(StoryDTO added) {
 
-        Story model = Story.getBuilder(added.getTitle())
-                .description(added.getDescription())
-                .build();
+		Story model = Story.getBuilder(added.getTitle())
+				.description(added.getDescription())
+				.startTime(added.getStartTime())
+				.endTime(added.getEndTime())
+				.build();
 
-        return repository.save(model);
-    }
+		return repository.save(model);
+	}
 
-    @Transactional(rollbackFor = {NotFoundException.class})
-    @Override
-    public Story deleteById(Long id) throws NotFoundException {
-        Story deleted = findById(id);
-        repository.delete(deleted);
-        return deleted;
-    }
+	@Transactional(rollbackFor = { NotFoundException.class })
+	@Override
+	public Story deleteById(Long id) throws NotFoundException {
+		Story deleted = findById(id);
+		repository.delete(deleted);
+		return deleted;
+	}
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<Story> findAll() {
-       return repository.findAll();
-    }
+	@Transactional(readOnly = true)
+	@Override
+	public List<Story> findAll() {
+		return repository.findAll();
+	}
 
-    @Transactional(readOnly = true, rollbackFor = {NotFoundException.class})
-    @Override
-    public Story findById(Long id) throws NotFoundException {
-        Story found = repository.findOne(id);
-        if (found == null) {
-            throw new NotFoundException("No entry found with id: " + id);
-        }
+	@Transactional(readOnly = true, rollbackFor = { NotFoundException.class })
+	@Override
+	public Story findById(Long id) throws NotFoundException {
+		Story found = repository.findOne(id);
+		if (found == null) {
+			throw new NotFoundException("No entry found with id: " + id);
+		}
 
-        return found;
-    }
+		return found;
+	}
 
-    @Transactional(rollbackFor = {NotFoundException.class})
-    @Override
-    public Story update(StoryDTO updated) throws NotFoundException {
-        Story model = findById(updated.getId());
-        model.update(updated.getDescription(), updated.getTitle());
+	@Transactional(rollbackFor = { NotFoundException.class })
+	@Override
+	public Story update(StoryDTO updated) throws NotFoundException {
+		Story model = findById(updated.getId());
+		model.update(updated.getDescription(), updated.getTitle(),
+				updated.getStartTime(), updated.getEndTime());
 
-        return model;
-    }
+		return model;
+	}
 }

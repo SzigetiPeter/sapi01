@@ -8,10 +8,12 @@
     <link rel="stylesheet" type="text/css" href="/static/css/example.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.css"/>
     <script type="text/javascript" src="/static/js/vendor/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="/static/js/vendor/bootstrap.js"></script>
     <script type="text/javascript" src="/static/js/vendor/bootstrap-transition.js"></script>
     <script type="text/javascript" src="/static/js/vendor/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="/static/js/vendor/bootstrap-datetimepicker.js"></script>
     <script type="text/javascript" src="/static/js/vendor/handlebars-1.0.rc.1.js"></script>
     <script type="text/javascript" src="/static/js/scrum.js"></script>
     <sitemesh:write property="head"/>

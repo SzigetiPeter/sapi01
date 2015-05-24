@@ -33,8 +33,32 @@ public class Story {
 
     @Column(name = "title", nullable = false, length = MAX_LENGTH_TITLE)
     private String title;
+    
+    @Column(name = "start_time", nullable = false)
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime startTime;
+    
+    @Column(name = "end_time", nullable = false)
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime endTime;
 
-    @Version
+    public DateTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(DateTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public DateTime getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(DateTime endTime) {
+		this.endTime = endTime;
+	}
+
+	@Version
     private long version;
 
     public Story() {
@@ -85,6 +109,13 @@ public class Story {
         this.description = description;
         this.title = title;
     }
+    
+    public void update(String description, String title, DateTime startTime, DateTime endTime) {
+        this.description = description;
+        this.title = title;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     public static class Builder {
 
@@ -102,6 +133,16 @@ public class Story {
         public Builder description(String description) {
             built.description = description;
             return this;
+        }
+        
+        public Builder startTime(DateTime startTime) {
+        	built.startTime = startTime;
+        	return this;
+        }
+        
+        public Builder endTime(DateTime endTime) {
+        	built.endTime = endTime;
+        	return this;
         }
     }
 

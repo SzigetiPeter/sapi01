@@ -1,8 +1,14 @@
 package ro.sapientia2015.story.dto;
 
+import javax.persistence.Column;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.joda.time.DateTime;
 
 import ro.sapientia2015.story.model.Story;
 
@@ -19,8 +25,30 @@ public class StoryDTO {
     @NotEmpty
     @Length(max = Story.MAX_LENGTH_TITLE)
     private String title;
+    
+    @NotNull
+    private DateTime startTime;
+    
+    @NotNull
+    private DateTime endTime;
 
-    public StoryDTO() {
+    public DateTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(DateTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public DateTime getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(DateTime endTime) {
+		this.endTime = endTime;
+	}
+
+	public StoryDTO() {
 
     }
 
