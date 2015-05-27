@@ -28,6 +28,26 @@
                     <form:errors id="error-description" path="description" cssClass="help-inline"/>
                 </div>
             </div>
+            <div id="control-group-start-time" class="control-group">
+				<label for="story-start-time"><spring:message
+						code="label.story.view.time.start.title" />:</label>
+
+				<div id="story-start-time" class="control input-append date form_datetime">
+					<form:input size="16" type="text" value=""  path="startTime" /> <span
+						class="add-on"><i class="icon-th"></i></span>
+				</div>
+
+			</div>
+			<div id="control-group-end-time" class="control-group">
+				<label for="story-end-time"><spring:message
+						code="label.story.view.time.end.title" />:</label>
+
+				<div id="story-end-time" class="control input-append date form_datetime">
+					<form:input size="16" type="text" value="" path="endTime"/> <span
+						class="add-on"><i class="icon-th"></i></span>
+				</div>
+
+			</div>       
             <div class="action-buttons">
                 <a href="/story/${story.id}" class="btn"><spring:message code="label.cancel"/></a>
                 <button id="update-story-button" type="submit" class="btn btn-primary"><spring:message

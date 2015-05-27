@@ -1,23 +1,27 @@
 package ro.sapientia2015.story.controller;
 
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ro.sapientia2015.story.dto.StoryDTO;
 import ro.sapientia2015.story.exception.NotFoundException;
 import ro.sapientia2015.story.model.Story;
 import ro.sapientia2015.story.service.StoryService;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * @author Kiss Tibor
@@ -45,7 +49,7 @@ public class StoryController {
     protected static final String VIEW_LIST = "story/list";
     protected static final String VIEW_UPDATE = "story/update";
     protected static final String VIEW_VIEW = "story/view";
-
+    
     @Resource
     private StoryService service;
 
@@ -65,7 +69,6 @@ public class StoryController {
         if (result.hasErrors()) {
             return VIEW_ADD;
         }
-        
         Story added = service.add(dto);
         addFeedbackMessage(attributes, FEEDBACK_MESSAGE_KEY_ADDED, added.getTitle());
         attributes.addAttribute(PARAMETER_ID, added.getId());
@@ -122,6 +125,8 @@ public class StoryController {
         dto.setId(updated.getId());
         dto.setDescription(updated.getDescription());
         dto.setTitle(updated.getTitle());
+        dto.setStartTime(updated.getStartTime());
+        dto.setEndTime(updated.getEndTime());
 
         return dto;
     }

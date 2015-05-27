@@ -15,6 +15,12 @@
         <div>
             <p><c:out value="${story.description}"/></p>
         </div>
+        <div>
+            <label for="startTimeText"><spring:message code="label.story.view.time.start.title"/></label>
+            <p id="startTimeText" ><c:out value="${story.startTime}"/></p>
+            <label for="endTimeText"><spring:message code="label.story.view.time.end.title"/></label>
+            <p id="endTimeText"><c:out value="${story.endTime}"/></p>
+        </div>
         <div class="action-buttons">
             <a href="/story/update/${story.id}" class="btn btn-primary"><spring:message code="label.update.story.link"/></a>
             <a id="delete-story-link" class="btn btn-primary"><spring:message code="label.delete.story.link"/></a>

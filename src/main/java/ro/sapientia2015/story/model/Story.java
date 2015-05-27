@@ -35,26 +35,24 @@ public class Story {
     private String title;
     
     @Column(name = "start_time", nullable = false)
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private DateTime startTime;
+    private String startTime;
     
     @Column(name = "end_time", nullable = false)
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    private DateTime endTime;
+    private String endTime;
 
-    public DateTime getStartTime() {
+    public String getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(DateTime startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 
-	public DateTime getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(DateTime endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 
@@ -110,7 +108,7 @@ public class Story {
         this.title = title;
     }
     
-    public void update(String description, String title, DateTime startTime, DateTime endTime) {
+    public void update(String description, String title, String startTime, String endTime) {
         this.description = description;
         this.title = title;
         this.startTime = startTime;
@@ -135,12 +133,12 @@ public class Story {
             return this;
         }
         
-        public Builder startTime(DateTime startTime) {
+        public Builder startTime(String startTime) {
         	built.startTime = startTime;
         	return this;
         }
         
-        public Builder endTime(DateTime endTime) {
+        public Builder endTime(String endTime) {
         	built.endTime = endTime;
         	return this;
         }
