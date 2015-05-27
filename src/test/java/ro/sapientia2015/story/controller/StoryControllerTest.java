@@ -1,5 +1,27 @@
 package ro.sapientia2015.story.controller;
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,25 +40,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import ro.sapientia2015.story.StoryTestUtil;
 import ro.sapientia2015.story.config.UnitTestContext;
-import ro.sapientia2015.story.controller.StoryController;
 import ro.sapientia2015.story.dto.StoryDTO;
 import ro.sapientia2015.story.exception.NotFoundException;
 import ro.sapientia2015.story.model.Story;
 import ro.sapientia2015.story.service.StoryService;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 
 /**
  * @author Kiss Tibor
@@ -86,7 +93,7 @@ public class StoryControllerTest {
     }
 
     @Test
-    public void add() {
+    public void add() throws ParseException {
         StoryDTO formObject = StoryTestUtil.createFormObject(null, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE);
 
         Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE);
@@ -113,7 +120,7 @@ public class StoryControllerTest {
     }
 
     @Test
-    public void addEmptyStory() {
+    public void addEmptyStory() throws ParseException {
         StoryDTO formObject = StoryTestUtil.createFormObject(null, "", "");
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
@@ -130,7 +137,7 @@ public class StoryControllerTest {
     }
 
     @Test
-    public void addWithTooLongDescriptionAndTitle() {
+    public void addWithTooLongDescriptionAndTitle() throws ParseException {
         String description = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_DESCRIPTION + 1);
         String title = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_TITLE + 1);
 
@@ -265,7 +272,7 @@ public class StoryControllerTest {
     }
 
     @Test
-    public void update() throws NotFoundException {
+    public void update() throws NotFoundException, ParseException {
         StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED);
 
         Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED);
@@ -292,7 +299,7 @@ public class StoryControllerTest {
     }
 
     @Test
-    public void updateEmpty() throws NotFoundException {
+    public void updateEmpty() throws NotFoundException, ParseException {
         StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, "", "");
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
@@ -309,7 +316,7 @@ public class StoryControllerTest {
     }
 
     @Test
-    public void updateWhenDescriptionAndTitleAreTooLong() throws NotFoundException {
+    public void updateWhenDescriptionAndTitleAreTooLong() throws NotFoundException, ParseException {
         String description = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_DESCRIPTION + 1);
         String title = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_TITLE + 1);
 
@@ -329,7 +336,7 @@ public class StoryControllerTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void updateWhenIsNotFound() throws NotFoundException {
+    public void updateWhenIsNotFound() throws NotFoundException, ParseException {
         StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED);
 
         when(serviceMock.update(formObject)).thenThrow(new NotFoundException(""));

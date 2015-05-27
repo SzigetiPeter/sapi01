@@ -14,7 +14,7 @@ $(function() {
 
 	function addDatetimePickes() {
 		$(".form_datetime").datetimepicker({
-			format : "dd MM yyyy - hh:ii",
+			format : "yyyy-mm-dd HH:ii",
 			autoclose : true,
 			todayBtn : true,
 			pickerPosition : "bottom-left"

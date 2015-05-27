@@ -1,11 +1,16 @@
 package ro.sapientia2015.story.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
@@ -65,10 +70,18 @@ public class StoryController {
     }
 
     @RequestMapping(value = "/story/add", method = RequestMethod.POST)
-    public String add(@Valid @ModelAttribute(MODEL_ATTRIBUTE) StoryDTO dto, BindingResult result, RedirectAttributes attributes) {
+    public String add(@Valid @ModelAttribute(MODEL_ATTRIBUTE) StoryDTO dto, BindingResult result, RedirectAttributes attributes) throws ParseException {
         if (result.hasErrors()) {
             return VIEW_ADD;
         }
+        
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date startTime = format.parse(dto.getStartTime());
+        Date endTime = format.parse(dto.getEndTime());
+        if(startTime.after(endTime)) {
+        	 return VIEW_ADD;
+        }
+        
         Story added = service.add(dto);
         addFeedbackMessage(attributes, FEEDBACK_MESSAGE_KEY_ADDED, added.getTitle());
         attributes.addAttribute(PARAMETER_ID, added.getId());
@@ -107,9 +120,15 @@ public class StoryController {
     }
 
     @RequestMapping(value = "/story/update", method = RequestMethod.POST)
-    public String update(@Valid @ModelAttribute(MODEL_ATTRIBUTE) StoryDTO dto, BindingResult result, RedirectAttributes attributes) throws NotFoundException {
+    public String update(@Valid @ModelAttribute(MODEL_ATTRIBUTE) StoryDTO dto, BindingResult result, RedirectAttributes attributes) throws NotFoundException, ParseException {
         if (result.hasErrors()) {
             return VIEW_UPDATE;
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date startTime = format.parse(dto.getStartTime());
+        Date endTime = format.parse(dto.getEndTime());
+        if(startTime.after(endTime)) {
+        	 return VIEW_UPDATE;
         }
 
         Story updated = service.update(dto);
