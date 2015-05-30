@@ -78,7 +78,7 @@ public class StoryController {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date startTime = format.parse(dto.getStartTime());
         Date endTime = format.parse(dto.getEndTime());
-        if(startTime.after(endTime)) {
+        if(startTime.after(endTime) || startTime.equals(endTime)) {
         	 return VIEW_ADD;
         }
         
@@ -127,7 +127,7 @@ public class StoryController {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date startTime = format.parse(dto.getStartTime());
         Date endTime = format.parse(dto.getEndTime());
-        if(startTime.after(endTime)) {
+        if(startTime.after(endTime) || startTime.equals(endTime)) {
         	 return VIEW_UPDATE;
         }
 

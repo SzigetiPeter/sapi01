@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Story {
 
     public static final int MAX_LENGTH_DESCRIPTION = 500;
-    public static final int MAX_LENGTH_TITLE = 100;
+    public static final int MAX_LENGTH_TITLE = 20;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

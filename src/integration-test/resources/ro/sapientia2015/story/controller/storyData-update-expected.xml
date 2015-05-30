@@ -1,5 +1,5 @@
 <dataset>
-    <story id="1" description="description" title="title" version="1"/>
-    <story id="2" description="Lorem ipsum" title="Bar" version="0"/>
+    <story id="1" description="description" title="title" start_time="2015-05-06 20:55" end_time="2015-05-06 21:55" version="1"/>
+    <story id="2" description="Lorem ipsum" title="Bar" start_time="2015-05-06 10:55" end_time="2015-05-06 11:55" version="0"/>
 </dataset>
 

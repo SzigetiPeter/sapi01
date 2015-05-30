@@ -61,6 +61,8 @@ public class ITStoryControllerTest {
     private static final String FORM_FIELD_DESCRIPTION = "description";
     private static final String FORM_FIELD_ID = "id";
     private static final String FORM_FIELD_TITLE = "title";
+    private static final String FORM_FIELD_START_TIME = "startTime";
+    private static final String FORM_FIELD_END_TIME = "endTime";
 
     @Resource
     private WebApplicationContext webApplicationContext;
@@ -82,7 +84,9 @@ public class ITStoryControllerTest {
                 .andExpect(forwardedUrl("/WEB-INF/jsp/story/add.jsp"))
                 .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("id", nullValue())))
                 .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("description", isEmptyOrNullString())))
-                .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("title", isEmptyOrNullString())));
+                .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("title", isEmptyOrNullString())))
+        		.andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("startTime", isEmptyOrNullString())))
+        		.andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("endTime", isEmptyOrNullString())));
     }
 
     @Test
@@ -96,9 +100,13 @@ public class ITStoryControllerTest {
                 .andExpect(view().name(StoryController.VIEW_ADD))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/story/add.jsp"))
                 .andExpect(model().attributeHasFieldErrors(StoryController.MODEL_ATTRIBUTE, "title"))
+                .andExpect(model().attributeHasFieldErrors(StoryController.MODEL_ATTRIBUTE, "startTime"))
+                .andExpect(model().attributeHasFieldErrors(StoryController.MODEL_ATTRIBUTE, "endTime"))
                 .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("id", nullValue())))
                 .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("description", isEmptyOrNullString())))
-                .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("title", isEmptyOrNullString())));
+                .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("title", isEmptyOrNullString())))
+        		.andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("startTime", isEmptyOrNullString())))
+        		.andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("endTime", isEmptyOrNullString())));
     }
 
     @Test
@@ -106,11 +114,15 @@ public class ITStoryControllerTest {
     public void addWhenTitleAndDescriptionAreTooLong() throws Exception {
         String title = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_TITLE + 1);
         String description = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_DESCRIPTION + 1);
-
+        String startDate = "2015-05-15 09:55";
+        String endDate = "2015-05-18 09:55";
+        
         mockMvc.perform(post("/story/add")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param(FORM_FIELD_DESCRIPTION, description)
                 .param(FORM_FIELD_TITLE, title)
+                .param(FORM_FIELD_START_TIME, startDate)
+                .param(FORM_FIELD_END_TIME, endDate)
                 .sessionAttr(StoryController.MODEL_ATTRIBUTE, new StoryDTO())
         )
                 .andExpect(status().isOk())
@@ -122,16 +134,49 @@ public class ITStoryControllerTest {
                 .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("description", is(description))))
                 .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("title", is(title))));
     }
+    
+    @Test
+    @ExpectedDatabase("storyData.xml")
+    public void addWhenTitleAndDatesAreMissing() throws Exception {
+        String title = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_TITLE + 1);
+        String description = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_DESCRIPTION + 1);
+        String startDate = "";
+        String endDate = "";
+        
+        mockMvc.perform(post("/story/add")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param(FORM_FIELD_DESCRIPTION, description)
+                .param(FORM_FIELD_TITLE, title)
+                .param(FORM_FIELD_START_TIME, startDate)
+                .param(FORM_FIELD_END_TIME, endDate)
+                .sessionAttr(StoryController.MODEL_ATTRIBUTE, new StoryDTO())
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name(StoryController.VIEW_ADD))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/story/add.jsp"))
+                .andExpect(model().attributeHasFieldErrors(StoryController.MODEL_ATTRIBUTE, "title"))
+                .andExpect(model().attributeHasFieldErrors(StoryController.MODEL_ATTRIBUTE, "description"))
+                .andExpect(model().attributeHasFieldErrors(StoryController.MODEL_ATTRIBUTE, "startTime"))
+                .andExpect(model().attributeHasFieldErrors(StoryController.MODEL_ATTRIBUTE, "endTime"))
+                .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("id", nullValue())))
+                .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("description", is(description))))
+        		.andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("startTime", isEmptyOrNullString())))
+        		.andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE, hasProperty("endTime", isEmptyOrNullString())));
+    }
 
     @Test
     @ExpectedDatabase(value="storyData-add-expected.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void add() throws Exception {
         String expectedRedirectViewPath = StoryTestUtil.createRedirectViewPath(StoryController.REQUEST_MAPPING_VIEW);
+        String startDate = "2015-05-06 02:55";
+        String endDate = "2015-05-06 04:55";
 
         mockMvc.perform(post("/story/add")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param(FORM_FIELD_DESCRIPTION, "description")
                 .param(FORM_FIELD_TITLE, "title")
+                .param(FORM_FIELD_START_TIME, startDate)
+                .param(FORM_FIELD_END_TIME, endDate)
                 .sessionAttr(StoryController.MODEL_ATTRIBUTE, new StoryDTO())
         )
                 .andExpect(status().isOk())
@@ -152,14 +197,16 @@ public class ITStoryControllerTest {
                         allOf(
                                 hasProperty("id", is(1L)),
                                 hasProperty("description", is("Lorem ipsum")),
-                                hasProperty("title", is("Foo"))
+                                hasProperty("title", is("Foo")),
+                                hasProperty("startTime", is("2015-05-06 09:55"))
                         )
                 )))
                 .andExpect(model().attribute(StoryController.MODEL_ATTRIBUTE_LIST, hasItem(
                         allOf(
                                 hasProperty("id", is(2L)),
                                 hasProperty("description", is("Lorem ipsum")),
-                                hasProperty("title", is("Bar"))
+                                hasProperty("title", is("Bar")),
+                                hasProperty("startTime", is("2015-05-06 10:55"))
                         )
                 )));
     }
@@ -269,12 +316,16 @@ public class ITStoryControllerTest {
     @ExpectedDatabase(value="storyData-update-expected.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void update() throws Exception {
         String expectedRedirectViewPath = StoryTestUtil.createRedirectViewPath(StoryController.REQUEST_MAPPING_VIEW);
-
+        String startDate = "2015-05-06 20:55";
+        String endDate = "2015-05-06 21:55";
+        
         mockMvc.perform(post("/story/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param(FORM_FIELD_DESCRIPTION, "description")
                 .param(FORM_FIELD_ID, "1")
                 .param(FORM_FIELD_TITLE, "title")
+                .param(FORM_FIELD_START_TIME, startDate)
+                .param(FORM_FIELD_END_TIME, endDate)
                 .sessionAttr(StoryController.MODEL_ATTRIBUTE, new StoryDTO())
         )
                 .andExpect(status().isOk())

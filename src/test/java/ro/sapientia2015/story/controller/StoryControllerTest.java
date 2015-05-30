@@ -1,8 +1,6 @@
 package ro.sapientia2015.story.controller;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -55,6 +53,8 @@ public class StoryControllerTest {
     private static final String FEEDBACK_MESSAGE = "feedbackMessage";
     private static final String FIELD_DESCRIPTION = "description";
     private static final String FIELD_TITLE = "title";
+    private static final String FIELD_START_TIME = "startTime";
+    private static final String FIELD_END_TIME = "endTime";
 
     private StoryController controller;
 
@@ -90,13 +90,15 @@ public class StoryControllerTest {
         assertNull(formObject.getId());
         assertNull(formObject.getDescription());
         assertNull(formObject.getTitle());
+        assertNull(formObject.getStartTime());
+        assertNull(formObject.getEndTime());
     }
-
+  
     @Test
     public void add() throws ParseException {
-        StoryDTO formObject = StoryTestUtil.createFormObject(null, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE);
+        StoryDTO formObject = StoryTestUtil.createFormObject(null, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, StoryTestUtil.START_DATE, StoryTestUtil.END_DATE);
 
-        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE);
+        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, StoryTestUtil.START_DATE, StoryTestUtil.END_DATE);
         when(serviceMock.add(formObject)).thenReturn(model);
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
@@ -121,7 +123,7 @@ public class StoryControllerTest {
 
     @Test
     public void addEmptyStory() throws ParseException {
-        StoryDTO formObject = StoryTestUtil.createFormObject(null, "", "");
+        StoryDTO formObject = StoryTestUtil.createFormObject(null, "", "", "", "");
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
         BindingResult result = bindAndValidate(mockRequest, formObject);
@@ -133,7 +135,7 @@ public class StoryControllerTest {
         verifyZeroInteractions(serviceMock, messageSourceMock);
 
         assertEquals(StoryController.VIEW_ADD, view);
-        assertFieldErrors(result, FIELD_TITLE);
+        assertFieldErrors(result, FIELD_TITLE, FIELD_START_TIME, FIELD_END_TIME);
     }
 
     @Test
@@ -141,7 +143,7 @@ public class StoryControllerTest {
         String description = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_DESCRIPTION + 1);
         String title = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_TITLE + 1);
 
-        StoryDTO formObject = StoryTestUtil.createFormObject(null, description, title);
+        StoryDTO formObject = StoryTestUtil.createFormObject(null, description, title, StoryTestUtil.START_DATE_UPDATED, StoryTestUtil.END_DATE_UPDATED);
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
         BindingResult result = bindAndValidate(mockRequest, formObject);
@@ -273,9 +275,9 @@ public class StoryControllerTest {
 
     @Test
     public void update() throws NotFoundException, ParseException {
-        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED);
+        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED, StoryTestUtil.START_DATE_UPDATED, StoryTestUtil.END_DATE_UPDATED);
 
-        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED);
+        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED, StoryTestUtil.START_DATE_UPDATED, StoryTestUtil.END_DATE_UPDATED);
         when(serviceMock.update(formObject)).thenReturn(model);
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
@@ -300,7 +302,7 @@ public class StoryControllerTest {
 
     @Test
     public void updateEmpty() throws NotFoundException, ParseException {
-        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, "", "");
+        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, "", "", "", "");
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
         BindingResult result = bindAndValidate(mockRequest, formObject);
@@ -312,7 +314,7 @@ public class StoryControllerTest {
         verifyZeroInteractions(messageSourceMock, serviceMock);
 
         assertEquals(StoryController.VIEW_UPDATE, view);
-        assertFieldErrors(result, FIELD_TITLE);
+        assertFieldErrors(result, FIELD_TITLE, FIELD_START_TIME, FIELD_END_TIME);
     }
 
     @Test
@@ -320,7 +322,7 @@ public class StoryControllerTest {
         String description = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_DESCRIPTION + 1);
         String title = StoryTestUtil.createStringWithLength(Story.MAX_LENGTH_TITLE + 1);
 
-        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, description, title);
+        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, description, title, StoryTestUtil.START_DATE_UPDATED, StoryTestUtil.END_DATE_UPDATED);
 
         MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
         BindingResult result = bindAndValidate(mockRequest, formObject);
@@ -337,7 +339,7 @@ public class StoryControllerTest {
 
     @Test(expected = NotFoundException.class)
     public void updateWhenIsNotFound() throws NotFoundException, ParseException {
-        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED);
+        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED, StoryTestUtil.START_DATE_UPDATED, StoryTestUtil.END_DATE_UPDATED);
 
         when(serviceMock.update(formObject)).thenThrow(new NotFoundException(""));
 
@@ -352,6 +354,65 @@ public class StoryControllerTest {
         verifyNoMoreInteractions(serviceMock);
         verifyZeroInteractions(messageSourceMock);
     }
+    
+    @Test
+    public void addWithWrongDates() throws ParseException {
+        String startDate = "2015-05-18 09:55";
+        String endDate = "2015-05-08 09:55";
+
+        StoryDTO formObject = StoryTestUtil.createFormObject(null, StoryTestUtil.TITLE, StoryTestUtil.DESCRIPTION, startDate, endDate);
+
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
+        BindingResult result = bindAndValidate(mockRequest, formObject);
+
+        RedirectAttributesModelMap attributes = new RedirectAttributesModelMap();
+
+        String view = controller.add(formObject, result, attributes);
+
+        verifyZeroInteractions(serviceMock, messageSourceMock);
+
+        assertEquals(StoryController.VIEW_ADD, view);
+        assertFieldErrorsEmpty(result, FIELD_START_TIME, FIELD_END_TIME);
+    }
+    
+    @Test(expected = ParseException.class)    
+    public void addWithIncompleteDates() throws ParseException {
+        String startDate = "2015-05 09:55";
+        String endDate = "2015-05 09:55";
+
+        StoryDTO formObject = StoryTestUtil.createFormObject(null, StoryTestUtil.TITLE, StoryTestUtil.DESCRIPTION, startDate, endDate);
+
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
+        BindingResult result = bindAndValidate(mockRequest, formObject);
+
+        RedirectAttributesModelMap attributes = new RedirectAttributesModelMap();
+
+        String view = controller.add(formObject, result, attributes);
+
+        verifyZeroInteractions(serviceMock, messageSourceMock);
+
+        assertEquals(StoryController.VIEW_ADD, view);
+        assertFieldErrors(result, FIELD_START_TIME, FIELD_END_TIME);
+    }
+    
+    @Test  
+    public void addWithSameDates() throws ParseException {
+        String startDate = "2015-05-06 09:55";
+
+        StoryDTO formObject = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.TITLE, StoryTestUtil.DESCRIPTION, startDate, startDate);
+
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest("POST", "/story/add");
+        BindingResult result = bindAndValidate(mockRequest, formObject);
+
+        RedirectAttributesModelMap attributes = new RedirectAttributesModelMap();
+
+        String view = controller.add(formObject, result, attributes);
+
+        verifyZeroInteractions(serviceMock, messageSourceMock);
+
+        assertEquals(StoryController.VIEW_ADD, view);
+        assertFieldErrorsEmpty(result, FIELD_START_TIME, FIELD_END_TIME);
+    }
 
     private void assertFeedbackMessage(RedirectAttributes attributes, String messageCode) {
         assertFlashMessages(attributes, messageCode, StoryController.FLASH_MESSAGE_KEY_FEEDBACK);
@@ -361,6 +422,13 @@ public class StoryControllerTest {
         assertEquals(fieldNames.length, result.getFieldErrorCount());
         for (String fieldName : fieldNames) {
             assertNotNull(result.getFieldError(fieldName));
+        }
+    }
+    
+    private void assertFieldErrorsEmpty(BindingResult result, String... fieldNames) {
+        assertNotSame(fieldNames.length, result.getFieldErrorCount());
+        for (String fieldName : fieldNames) {
+            assertNull(result.getFieldError(fieldName));
         }
     }
 
