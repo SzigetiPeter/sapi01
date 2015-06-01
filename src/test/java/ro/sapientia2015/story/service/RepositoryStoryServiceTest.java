@@ -139,4 +139,74 @@ public class RepositoryStoryServiceTest {
         verify(repositoryMock, times(1)).findOne(dto.getId());
         verifyNoMoreInteractions(repositoryMock);
     }
+    
+    @Test(expected = NotFoundException.class)
+    public void findByStartDateNotExists() throws NotFoundException {
+        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, StoryTestUtil.START_DATE, StoryTestUtil.END_DATE);
+        when(repositoryMock.findOne(StoryTestUtil.ID)).thenReturn(model);
+
+        Story actual = service.findByStartDate(model.getStartTime()).get(0);
+
+        verify(repositoryMock, times(1)).findOne(StoryTestUtil.ID);
+        verifyNoMoreInteractions(repositoryMock);
+
+        assertEquals(model, actual);
+    }
+    
+    @Test(expected = NotFoundException.class)
+    public void findByEndDate() throws NotFoundException {
+        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, StoryTestUtil.START_DATE, StoryTestUtil.END_DATE);
+        when(repositoryMock.findOne(StoryTestUtil.ID)).thenReturn(model);
+
+        Story actual = service.findByEndDate(model.getEndTime()).get(0);
+
+        verify(repositoryMock, times(1)).findOne(StoryTestUtil.ID);
+        verifyNoMoreInteractions(repositoryMock);
+
+        assertEquals(model, actual);
+    }
+    
+    @Test
+    public void updateWrongTime() throws NotFoundException {
+        StoryDTO dto = StoryTestUtil.createFormObject(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION_UPDATED, StoryTestUtil.TITLE_UPDATED, StoryTestUtil.START_DATE_UPDATED, StoryTestUtil.END_DATE_UPDATED);
+        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, StoryTestUtil.START_DATE, StoryTestUtil.END_DATE);
+        when(repositoryMock.findOne(dto.getId())).thenReturn(model);
+
+        Story actual = service.update(dto);
+
+        verify(repositoryMock, times(1)).findOne(dto.getId());
+        verifyNoMoreInteractions(repositoryMock);
+
+        assertEquals(dto.getId(), actual.getId());
+        assertEquals(dto.getDescription(), actual.getDescription());
+        assertEquals(dto.getTitle(), actual.getTitle());
+    }
+    
+    @Test(expected = NotFoundException.class)
+    public void deleteByStartDate() throws NotFoundException {
+        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, StoryTestUtil.START_DATE, StoryTestUtil.END_DATE);
+        when(repositoryMock.findOne(StoryTestUtil.ID)).thenReturn(model);
+
+        Story actual = service.deleteByStartDate(StoryTestUtil.START_DATE);
+
+        verify(repositoryMock, times(1)).findOne(StoryTestUtil.ID);
+        verify(repositoryMock, times(1)).delete(model);
+        verifyNoMoreInteractions(repositoryMock);
+
+        assertEquals(model, actual);
+    }
+    
+    @Test(expected = NotFoundException.class)
+    public void deleteByEndDate() throws NotFoundException {
+        Story model = StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, StoryTestUtil.START_DATE, StoryTestUtil.END_DATE);
+        when(repositoryMock.findOne(StoryTestUtil.ID)).thenReturn(model);
+
+        Story actual = service.deleteByEndDate(StoryTestUtil.START_DATE);
+
+        verify(repositoryMock, times(1)).findOne(StoryTestUtil.ID);
+        verify(repositoryMock, times(1)).delete(model);
+        verifyNoMoreInteractions(repositoryMock);
+
+        assertEquals(model, actual);
+    }
 }

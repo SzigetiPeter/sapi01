@@ -10,7 +10,9 @@ import ro.sapientia2015.story.repository.StoryRepository;
 
 import javax.annotation.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Kiss Tibor
@@ -27,8 +29,7 @@ public class RepositoryStoryService implements StoryService {
 
 		Story model = Story.getBuilder(added.getTitle())
 				.description(added.getDescription())
-				.startTime(added.getStartTime())
-				.endTime(added.getEndTime())
+				.startTime(added.getStartTime()).endTime(added.getEndTime())
 				.build();
 
 		return repository.save(model);
@@ -68,4 +69,67 @@ public class RepositoryStoryService implements StoryService {
 
 		return model;
 	}
+
+	@Transactional(readOnly = true, rollbackFor = { NotFoundException.class })
+	@Override
+	public List<Story> findByStartDate(final String date)
+			throws NotFoundException {
+
+		final List<Story> found = new ArrayList<Story>();
+		repository.findAll().forEach(new Consumer<Story>() {
+
+			@Override
+			public void accept(Story t) {
+				if (t.getStartTime().equals(date)) {
+					found.add(t);
+				}
+			}
+		});
+
+		if (found.isEmpty()) {
+			throw new NotFoundException("No entry found with date: " + date);
+		}
+
+		return found;
+	}
+
+	@Transactional(readOnly = true, rollbackFor = { NotFoundException.class })
+	@Override
+	public List<Story> findByEndDate(final String date)
+			throws NotFoundException {
+
+		final List<Story> found = new ArrayList<Story>();
+		repository.findAll().forEach(new Consumer<Story>() {
+
+			@Override
+			public void accept(Story t) {
+				if (t.getEndTime().equals(date)) {
+					found.add(t);
+				}
+			}
+		});
+
+		if (found.isEmpty()) {
+			throw new NotFoundException("No entry found with date: " + date);
+		}
+
+		return found;
+	}
+	
+	@Transactional(rollbackFor = { NotFoundException.class })
+	@Override
+	public Story deleteByEndDate(String date) throws NotFoundException {
+		Story deleted = findByStartDate(date).get(0);
+		repository.delete(deleted);
+		return deleted;
+		}
+	
+	@Transactional(rollbackFor = { NotFoundException.class })
+	@Override
+	public Story deleteByStartDate(String date) throws NotFoundException {
+		Story deleted = findByStartDate(date).get(0);
+		repository.delete(deleted);
+		return deleted;
+		}
+
 }

@@ -413,6 +413,50 @@ public class StoryControllerTest {
         assertEquals(StoryController.VIEW_ADD, view);
         assertFieldErrorsEmpty(result, FIELD_START_TIME, FIELD_END_TIME);
     }
+    
+    @Test
+    public void findByStartDate() throws NotFoundException {
+        BindingAwareModelMap model = new BindingAwareModelMap();
+        String startDates [] = {"2015-05-15 09:55"};
+        String endDates [] = {"2015-05-22 09:55"};
+            
+        List<Story> found = new ArrayList<Story>();
+        
+        for(int i=0;i< startDates.length; i++) 
+        	found.add(StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, startDates[i], endDates[i]));
+        when(serviceMock.findByStartDate(StoryTestUtil.START_DATE)).thenReturn(found);
+
+        String view = controller.findByStartDate(startDates[0], model);
+
+        verify(serviceMock, times(1)).findByStartDate(StoryTestUtil.START_DATE);
+        verifyNoMoreInteractions(serviceMock);
+        verifyZeroInteractions(messageSourceMock);
+
+        assertEquals(StoryController.VIEW_VIEW, view);
+        assertEquals(found.get(0), model.asMap().get(StoryController.MODEL_ATTRIBUTE));
+    }
+    
+    @Test
+    public void findByEndDate() throws NotFoundException {
+        BindingAwareModelMap model = new BindingAwareModelMap();
+        String startDates [] = {"2015-05-15 09:55"};
+        String endDates [] = {"2015-05-18 09:55"};
+            
+        List<Story> found = new ArrayList<Story>();
+        
+        for(int i=0;i< endDates.length; i++) 
+        	found.add(StoryTestUtil.createModel(StoryTestUtil.ID, StoryTestUtil.DESCRIPTION, StoryTestUtil.TITLE, startDates[i], endDates[i]));
+        when(serviceMock.findByEndDate(StoryTestUtil.END_DATE)).thenReturn(found);
+
+        String view = controller.findByEndDate(endDates[0], model);
+
+        verify(serviceMock, times(1)).findByEndDate(StoryTestUtil.END_DATE);
+        verifyNoMoreInteractions(serviceMock);
+        verifyZeroInteractions(messageSourceMock);
+
+        assertEquals(StoryController.VIEW_VIEW, view);
+        assertEquals(found.get(0), model.asMap().get(StoryController.MODEL_ATTRIBUTE));
+    }
 
     private void assertFeedbackMessage(RedirectAttributes attributes, String messageCode) {
         assertFlashMessages(attributes, messageCode, StoryController.FLASH_MESSAGE_KEY_FEEDBACK);

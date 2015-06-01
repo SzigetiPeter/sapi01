@@ -39,6 +39,22 @@ public interface StoryService {
      * @throws NotFoundException    if no to-do entry is found with the given id.
      */
     public Story findById(Long id) throws NotFoundException;
+    
+    /**
+     * Finds a to-do entry.
+     * @param date    The date of the wanted to-do entry.
+     * @return  The found to-entry.
+     * @throws NotFoundException    if no to-do entry is found with the given id.
+     */
+    public List<Story> findByStartDate(String date) throws NotFoundException;
+    
+    /**
+     * Finds a to-do entry.
+     * @param date    The date of the wanted to-do entry.
+     * @return  The found to-entry.
+     * @throws NotFoundException    if no to-do entry is found with the given id.
+     */
+    public List<Story> findByEndDate(String date) throws NotFoundException;
 
     /**
      * Updates the information of a to-do entry.
@@ -47,4 +63,14 @@ public interface StoryService {
      * @throws NotFoundException    If no to-do entry is found with the given id.
      */
     public Story update(StoryDTO updated) throws NotFoundException;
+
+    /**
+     * Deletes all information from the database with the given start date.
+     * */
+    public Story deleteByStartDate(String date) throws NotFoundException;
+    
+    /**
+     * Deletes all information from the database with the given start date.
+     * */
+    public Story deleteByEndDate(String date) throws NotFoundException;
 }

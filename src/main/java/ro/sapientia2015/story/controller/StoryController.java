@@ -9,8 +9,6 @@ import java.util.Locale;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
@@ -106,6 +104,20 @@ public class StoryController {
     @RequestMapping(value = REQUEST_MAPPING_VIEW, method = RequestMethod.GET)
     public String findById(@PathVariable("id") Long id, Model model) throws NotFoundException {
         Story found = service.findById(id);
+        model.addAttribute(MODEL_ATTRIBUTE, found);
+        return VIEW_VIEW;
+    }
+    
+    @RequestMapping(value = REQUEST_MAPPING_VIEW, method = RequestMethod.GET)
+    public String findByStartDate(@PathVariable("startTime") String startTime, Model model) throws NotFoundException {
+        Story found = service.findByStartDate(startTime).get(0);
+        model.addAttribute(MODEL_ATTRIBUTE, found);
+        return VIEW_VIEW;
+    }
+    
+    @RequestMapping(value = REQUEST_MAPPING_VIEW, method = RequestMethod.GET)
+    public String findByEndDate(@PathVariable("endTime") String endTime, Model model) throws NotFoundException {
+        Story found = service.findByEndDate(endTime).get(0);
         model.addAttribute(MODEL_ATTRIBUTE, found);
         return VIEW_VIEW;
     }
