@@ -47,6 +47,8 @@ public class StoryController {
 
     protected static final String REQUEST_MAPPING_LIST = "/";
     protected static final String REQUEST_MAPPING_VIEW = "/story/{id}";
+    protected static final String REQUEST_MAPPING_VIEW_S_DATE = "/story/find/{startTime}";
+    protected static final String REQUEST_MAPPING_VIEW_E_DATE = "/story/find/{endTime}";
 
     protected static final String VIEW_ADD = "story/add";
     protected static final String VIEW_LIST = "story/list";
@@ -108,14 +110,14 @@ public class StoryController {
         return VIEW_VIEW;
     }
     
-    @RequestMapping(value = REQUEST_MAPPING_VIEW, method = RequestMethod.GET)
+    @RequestMapping(value = REQUEST_MAPPING_VIEW_S_DATE, method = RequestMethod.GET)
     public String findByStartDate(@PathVariable("startTime") String startTime, Model model) throws NotFoundException {
         Story found = service.findByStartDate(startTime).get(0);
         model.addAttribute(MODEL_ATTRIBUTE, found);
         return VIEW_VIEW;
     }
     
-    @RequestMapping(value = REQUEST_MAPPING_VIEW, method = RequestMethod.GET)
+    @RequestMapping(value = REQUEST_MAPPING_VIEW_E_DATE, method = RequestMethod.GET)
     public String findByEndDate(@PathVariable("endTime") String endTime, Model model) throws NotFoundException {
         Story found = service.findByEndDate(endTime).get(0);
         model.addAttribute(MODEL_ATTRIBUTE, found);
