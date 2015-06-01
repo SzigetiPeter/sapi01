@@ -19,7 +19,7 @@
             <c:otherwise>
                 <c:forEach items="${ stories}" var="story">
                     <div class="well well-small">
-                        <a href="/story/${story.id}"><c:out value="${story.title}"/></a>
+                        <a id="story-${story.id}" href="/story/${story.id}"><c:out value="${story.title}"/></a>
                     </div>
                 </c:forEach>
             </c:otherwise>
