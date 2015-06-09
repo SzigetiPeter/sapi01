@@ -76,15 +76,11 @@ public class RepositoryStoryService implements StoryService {
 			throws NotFoundException {
 
 		final List<Story> found = new ArrayList<Story>();
-		repository.findAll().forEach(new Consumer<Story>() {
-
-			@Override
-			public void accept(Story t) {
-				if (t.getStartTime().equals(date)) {
-					found.add(t);
-				}
+		for(Story t : repository.findAll()) {
+			if (t.getStartTime().equals(date)) {
+				found.add(t);
 			}
-		});
+		}
 
 		if (found.isEmpty()) {
 			throw new NotFoundException("No entry found with date: " + date);
@@ -99,15 +95,11 @@ public class RepositoryStoryService implements StoryService {
 			throws NotFoundException {
 
 		final List<Story> found = new ArrayList<Story>();
-		repository.findAll().forEach(new Consumer<Story>() {
-
-			@Override
-			public void accept(Story t) {
-				if (t.getEndTime().equals(date)) {
-					found.add(t);
-				}
+		for(Story t : repository.findAll()) {
+			if (t.getEndTime().equals(date)) {
+				found.add(t);
 			}
-		});
+		}
 
 		if (found.isEmpty()) {
 			throw new NotFoundException("No entry found with date: " + date);
